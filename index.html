@@ -250,6 +250,36 @@ tfoot td{font-weight:700;background:var(--surface2);border-top:1px solid var(--l
 .mped .n{font-family:var(--display);font-weight:700;font-size:14px}
 .mped .it{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;padding:3px 0;border-bottom:1px dotted var(--line)}
 .mped .it:last-child{border-bottom:0}
+.pedgrid{display:grid;gap:14px;grid-template-columns:1fr}
+@media (min-width:1000px){ .pedgrid{grid-template-columns:1.6fr 1fr;align-items:start} }
+.catbar{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+.thumb{width:44px;height:44px;border-radius:8px;object-fit:cover;background:var(--surface2);border:1px solid var(--line);flex:none;display:block}
+.thumb.ph{display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:16px;color:var(--accent);background:var(--accentSoft);border-color:var(--accentLine)}
+.thumb.sm{width:34px;height:34px;border-radius:7px;font-size:13px}
+.fotobox{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.fotobox .thumb{width:72px;height:72px;border-radius:10px;font-size:24px}
+.catlista{display:flex;flex-direction:column;max-height:460px;overflow-y:auto;border:1px solid var(--line);border-radius:var(--r);margin-top:11px;background:var(--surface)}
+.catrow{display:grid;grid-template-columns:auto 1fr auto;gap:11px;align-items:center;padding:10px 12px;border-bottom:1px solid var(--line)}
+.catrow:last-child{border-bottom:0}
+.catrow:hover{background:var(--surface2)}
+.catrow.jaesta{background:var(--accentSoft)}
+.catrow .ci b{display:block;font-size:13.5px;font-weight:600;line-height:1.25}
+.catrow .ci span{font-size:11.5px;color:var(--ink2)}
+.catrow .cq{display:flex;gap:6px;align-items:center;flex-wrap:nowrap}
+.catrow .cq input{width:58px;text-align:center;font-family:var(--mono);padding:6px 4px;border-radius:0;border-left:0;border-right:0}
+.step{display:flex;align-items:stretch}
+.step button{width:30px;border:1px solid var(--line2);background:var(--surface);color:var(--ink);cursor:pointer;font-size:17px;line-height:1;font-weight:600;padding:0}
+.step button:first-child{border-radius:7px 0 0 7px}
+.step button:last-child{border-radius:0 7px 7px 0}
+.step button:hover{background:var(--surface2)}
+.catrow .cq select{width:auto;padding:6px 8px;font-size:12.5px}
+@media (max-width:620px){ .catrow{grid-template-columns:auto 1fr} .catrow .cq{grid-column:1/-1;justify-content:flex-end} }
+.carit{display:grid;grid-template-columns:1fr auto auto;gap:9px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px}
+.carit:last-child{border-bottom:0}
+.carit .cn{font-weight:600;line-height:1.25}
+.carit .cs{font-size:11.5px;color:var(--ink2);font-family:var(--mono)}
+.carit input{width:74px;text-align:right;font-family:var(--mono);padding:5px 7px}
+.carrinho{max-height:400px;overflow-y:auto}
 .zerarbox{border:1px solid var(--bad);background:var(--badSoft);border-radius:var(--r);padding:12px 14px;display:flex;flex-direction:column;gap:9px;margin-top:12px}
 /* pedidos */
 .pedcard{border:1px solid var(--line);border-left:3px solid var(--line2);border-radius:9px;padding:11px 12px;display:flex;flex-direction:column;gap:7px;background:var(--surface);cursor:pointer}
@@ -330,16 +360,20 @@ tfoot td{font-weight:700;background:var(--surface2);border-top:1px solid var(--l
           <label class="f" style="flex:2 1 200px">Observação<input id="qObs" placeholder="Ex.: produção de sexta, encomenda de festa"></label>
         </div>
         <div class="sep"></div>
-        <div class="row">
-          <label class="f" style="flex:2 1 190px">Produto<select id="qProd"></select></label>
-          <label class="f" style="flex:1 1 120px">Quantidade em<select id="qUnid"><option value="base">Unidade base</option><option value="un">Unidades</option><option value="cx">Caixas / fardos</option></select></label>
-          <label class="f" style="flex:1 1 100px">Quantidade<input id="qQtd" type="number" step="0.001" min="0" value="1"></label>
-          <button class="btn ghost" type="button" id="qAdd">Adicionar ao pedido</button>
-        </div>
-        <div id="qRascunho" style="margin-top:12px"></div>
-        <div class="row" style="margin-top:12px;justify-content:space-between">
-          <div id="qResumo" class="small muted"></div>
-          <div class="row"><button class="btn ghost" type="button" id="qLimpar">Descartar</button><button class="btn" type="button" id="qEnviar">Enviar pedido ao almoxarifado</button></div>
+        <div class="pedgrid">
+          <div>
+            <div class="catbar">
+              <label class="f" style="flex:2 1 190px">Buscar produto<input id="qBusca" placeholder="Nome do produto" autocomplete="off"></label>
+              <label class="f" style="flex:1 1 150px">Categoria<select id="qCat"></select></label>
+            </div>
+            <div id="qCatLista" class="catlista"></div>
+          </div>
+          <div>
+            <div class="eyebrow" style="margin-bottom:6px">Carrinho <span id="qBadge"></span></div>
+            <div id="qCarrinho" class="carrinho"></div>
+            <div id="qResumo" class="small muted" style="margin-top:10px"></div>
+            <div class="row" style="margin-top:10px"><button class="btn" type="button" id="qEnviar">Enviar ao almoxarifado</button><button class="btn ghost" type="button" id="qLimpar">Esvaziar</button></div>
+          </div>
         </div>
       </div>
 
@@ -574,6 +608,16 @@ tfoot td{font-weight:700;background:var(--surface2);border-top:1px solid var(--l
             <label class="f" style="flex:1 1 150px">Fornecedor habitual<input id="pForn" placeholder="Opcional"></label>
             <label class="f" style="flex:1 1 130px">Validade típica <span class="q">dias após o recebimento</span><input id="pVDias" type="number" step="1" min="0" placeholder="Opcional"></label>
           </div>
+          <div class="row" style="align-items:center">
+            <div class="fotobox">
+              <span id="pFotoPrev"></span>
+              <div>
+                <label class="f" style="margin:0">Foto do produto <span class="q">ajuda quem monta o pedido a reconhecer</span>
+                  <input id="pFoto" type="file" accept="image/*" style="padding:6px"></label>
+                <button class="btn ghost sm" type="button" id="pFotoTira" style="margin-top:6px">Tirar foto</button>
+              </div>
+            </div>
+          </div>
           <div class="row">
             <label class="f" style="flex:1 1 170px">Código de barras da unidade <span class="q">EAN do pacote</span><input id="pEan" inputmode="numeric" placeholder="Bipe ou digite"></label>
             <label class="f" style="flex:1 1 170px">Código de barras da caixa <span class="q">EAN do fardo, se houver</span><input id="pEanCx" inputmode="numeric" placeholder="Bipe ou digite"></label>
@@ -692,23 +736,26 @@ tfoot td{font-weight:700;background:var(--surface2);border-top:1px solid var(--l
         <div style="margin-left:auto" id="mSetorTroca"></div></div>
       <div class="pagehead"><div><h1>O que você precisa</h1>
       <p>Monte a lista, envie e acompanhe aqui embaixo o que o almoxarifado já separou. Você não precisa de mais nada nesta tela.</p></div></div>
-      <div class="card">
-        <h3>Novo pedido</h3><p class="hint">Escolha o produto, diga quanto precisa e adicione. Pode juntar quantos itens quiser no mesmo pedido.</p>
-        <div class="row">
-          <label class="f" style="flex:2 1 190px">Produto<select id="mProd"></select></label>
-          <label class="f" style="flex:1 1 120px">Quantidade em<select id="mUnid"><option value="base">Unidade base</option><option value="un">Unidades</option><option value="cx">Caixas / fardos</option></select></label>
-          <label class="f" style="flex:1 1 100px">Quantidade<input id="mQtd" type="number" step="0.001" min="0" value="1"></label>
-          <button class="btn ghost" type="button" id="mAdd">Adicionar</button>
+      <div class="pedgrid">
+        <div class="card">
+          <h3>Lista de produtos</h3><p class="hint">Todos os itens cadastrados. Procure pelo nome, informe a quantidade e ponha no carrinho.</p>
+          <div class="catbar">
+            <label class="f" style="flex:2 1 200px">Buscar<input id="mBusca" placeholder="Nome do produto" autocomplete="off"></label>
+            <label class="f" style="flex:1 1 160px">Categoria<select id="mCat"></select></label>
+          </div>
+          <div id="mCatLista" class="catlista"></div>
         </div>
-        <div id="mRasc" style="margin-top:12px"></div>
-        <div class="row" style="margin-top:12px">
-          <label class="f" style="flex:1 1 140px">Seu nome<input id="mSolic" list="lstResp" placeholder="Quem está pedindo"></label>
-          <label class="f" style="flex:1 1 130px">Precisa para<input id="mData" type="date"></label>
-          <label class="f" style="flex:2 1 200px">Observação<input id="mObs" placeholder="Ex.: produção de sexta"></label>
-        </div>
-        <div class="row" style="margin-top:12px;justify-content:space-between">
-          <div id="mResumo" class="small muted"></div>
-          <div class="row"><button class="btn ghost" type="button" id="mLimpar">Descartar</button><button class="btn" type="button" id="mEnviar">Enviar pedido</button></div>
+        <div class="card">
+          <h3>Carrinho <span id="mBadge"></span></h3><p class="hint">Confira antes de enviar. Dá para mudar a quantidade aqui.</p>
+          <div id="mCarrinho" class="carrinho"></div>
+          <div class="sep"></div>
+          <label class="f">Seu nome<input id="mSolic" list="lstResp" placeholder="Quem está pedindo"></label>
+          <div class="row" style="margin-top:9px">
+            <label class="f" style="flex:1 1 130px">Precisa para<input id="mData" type="date"></label>
+            <label class="f" style="flex:1 1 150px">Observação<input id="mObs" placeholder="Ex.: produção de sexta"></label>
+          </div>
+          <div id="mResumo" class="small muted" style="margin-top:10px"></div>
+          <div class="row" style="margin-top:10px"><button class="btn" type="button" id="mEnviar">Enviar pedido</button><button class="btn ghost" type="button" id="mLimpar">Esvaziar</button></div>
         </div>
       </div>
       <div class="card" style="margin-top:14px">
@@ -739,7 +786,7 @@ tfoot td{font-weight:700;background:var(--surface2);border-top:1px solid var(--l
           <h3>Dia a dia</h3>
           <div class="defs">
             <div class="d"><b>Painel</b><span>O resumo da manhã: valor parado em estoque, lotes vencendo, itens abaixo do mínimo, % de desperdício e o consumo dos últimos 14 dias. As listas "vence primeiro" e "comprar hoje" são as duas decisões do dia.</span></div>
-            <div class="d"><b>Pedidos dos setores</b><span>O líder do setor monta a lista do que precisa e envia. O pedido cai na fila do almoxarifado, que separa item por item — cada item separado já é a baixa no estoque, no nome do setor que pediu. Quando o último item sai, o pedido fecha sozinho. Tem botão de imprimir a lista para levar na mão.</span></div>
+            <div class="d"><b>Pedidos dos setores</b><span>Funciona como pedido de aplicativo de comida: o líder do setor abre a lista de todos os produtos cadastrados, busca pelo nome, escolhe a quantidade e põe no carrinho. Depois confere o carrinho e envia. O pedido cai na fila do almoxarifado, que separa item por item — cada item separado já é a baixa no estoque, no nome do setor que pediu. Quando o último item sai, o pedido fecha sozinho. Tem botão de imprimir a lista para levar na mão.</span></div>
             <div class="d"><b>Leitor de código</b><span>Bipagem com leitor de pistola. Escolha Saída, Entrada ou Perda, bipe os produtos, confira a fila e confirme tudo de uma vez. O código do fabricante fica gravado na sua base na primeira bipada.</span></div>
             <div class="d"><b>Entrada de mercadoria</b><span>Recebimento na mão, quando não dá para bipar. Você recebe em caixas, unidades ou na unidade base e o sistema mostra a conversão antes de gravar. Cada entrada vira um lote com validade, custo, fornecedor e nota.</span></div>
             <div class="d"><b>Saída para produção</b><span>Baixa por setor. O sistema escolhe sozinho de qual lote tirar: sai primeiro o que vence antes, rateando entre lotes quando um só não cobre. Se faltar saldo, ele bloqueia e diz quanto falta.</span></div>
@@ -1107,7 +1154,7 @@ function opts(sel, lista, vazio){
 }
 function refreshSelects(){
   const ps=S.produtos.slice().sort((a,b)=>a.nome.localeCompare(b.nome)).map(p=>({v:p.id,t:p.nome+" ("+p.unidadeBase+")"}));
-  ["#eProd","#sProd","#dProd","#qProd"].forEach(id=>opts($(id),ps,"Escolha o produto"));
+  ["#eProd","#sProd","#dProd"].forEach(id=>opts($(id),ps,"Escolha o produto"));
   ["#kProd","#rProd"].forEach(id=>opts($(id),ps,"Todos os produtos"));
   const st=(S.cfg.setores||[]).map(s=>({v:s.nome,t:s.nome}));
   ["#sSetor","#dSetor","#lSetor","#qSetor"].forEach(id=>opts($(id),st,"Escolha o setor"));
@@ -1409,7 +1456,7 @@ function renderProdutos(){
   $("#prodTbl").innerHTML=tabela(
     [{t:"Produto"},{t:"Código"},{t:"Conversão da caixa"},{t:"Custo base",n:1},{t:"Estoque",n:1},{t:"Mínimo",n:1},{t:"Valor",n:1},{t:""}],
     ps.map(p=>{ const e=estoque(p.id), baixo=(p.estoqueMinimo||0)>0&&e<p.estoqueMinimo;
-      return ['<div style="font-weight:600">'+esc(p.nome)+'</div><div class="tag">'+esc(p.fornecedor||"sem fornecedor habitual")+"</div>",
+      return ['<div style="display:flex;gap:9px;align-items:center">'+miniatura(p,"sm")+'<div><div style="font-weight:600">'+esc(p.nome)+'</div><div class="tag">'+esc(p.fornecedor||"sem fornecedor habitual")+"</div></div></div>",
         '<span class="tag">'+esc(p.ean||p.codigoInterno||"sem código")+"</span>"+(p.ean?"":p.codigoInterno?'<br><span class="chip a">interno</span>':""),
         '<span class="num">1 cx = '+nf(p.unidadesPorCaixa||1,0)+" un = "+nf((p.unidadesPorCaixa||1)*(p.qtdBasePorUnidade||1),3)+" "+esc(p.unidadeBase)+"</span>",
         R$(p.custoUnitBase)+"/"+esc(p.unidadeBase),
@@ -1421,8 +1468,36 @@ function renderProdutos(){
   $("#prodTbl").querySelectorAll("[data-rm]").forEach(b=>b.onclick=()=>excluiProduto(b.dataset.rm));
   prevProduto();
 }
+/* A foto e reduzida para 220 px e gravada dentro do proprio produto, para o
+   sistema continuar funcionando sem servidor de imagens. */
+let fotoAtual="";
+function mostraFoto(){
+  const nome=$("#pNome").value||"?";
+  $("#pFotoPrev").innerHTML= fotoAtual? '<img class="thumb" src="'+fotoAtual+'" alt="">'
+    : '<span class="thumb ph">'+esc(nome.trim().charAt(0).toUpperCase()||"?")+"</span>";
+  $("#pFotoTira").style.display = fotoAtual? "" : "none";
+}
+$("#pFoto").addEventListener("change",e=>{
+  const f=e.target.files&&e.target.files[0]; if(!f) return;
+  const img=new Image(), url=URL.createObjectURL(f);
+  img.onload=function(){
+    const L=220, k=Math.min(1,L/Math.max(img.width,img.height));
+    const cv=document.createElement("canvas");
+    cv.width=Math.round(img.width*k)||1; cv.height=Math.round(img.height*k)||1;
+    cv.getContext("2d").drawImage(img,0,0,cv.width,cv.height);
+    let q=0.72, dados=cv.toDataURL("image/jpeg",q);
+    while(dados.length>90000 && q>0.35){ q-=0.12; dados=cv.toDataURL("image/jpeg",q); }
+    URL.revokeObjectURL(url);
+    if(dados.length>140000){ toast("Essa imagem ficou grande demais. Tente outra foto.",true); return; }
+    fotoAtual=dados; mostraFoto(); toast("Foto pronta. Agora salve o produto para gravar.");
+  };
+  img.onerror=function(){ URL.revokeObjectURL(url); toast("Não consegui ler essa imagem.",true); };
+  img.src=url;
+});
+$("#pFotoTira").onclick=()=>{ fotoAtual=""; $("#pFoto").value=""; mostraFoto(); };
 function prevProduto(){
   const upc=num($("#pUPC").value)||1, qbu=num($("#pQBU").value)||0, ub=$("#pUB").value, c=num($("#pCusto").value);
+  mostraFoto();
   $("#pPrev").innerHTML='<div class="prev"><span class="t">Conversão</span><span>1 caixa = <b>'+nf(upc,0)+"</b> unidades = <b>"+nf(upc*qbu,4)+" "+esc(ub)+
     "</b> · custo da caixa <b>"+R$(upc*qbu*c)+"</b></span><span class='small muted'>Confira com a embalagem na mão: essa conta alimenta entrada, saída e balanço.</span></div>";
 }
@@ -1538,7 +1613,7 @@ $("#fProd").addEventListener("submit",async e=>{
     unidadesPorCaixa:num($("#pUPC").value)||1,qtdBasePorUnidade:num($("#pQBU").value)||1,
     custoUnitBase:num($("#pCusto").value),estoqueMinimo:num($("#pMin").value),fornecedor:$("#pForn").value.trim(),
     vDias:$("#pVDias").value?Number($("#pVDias").value):null,
-    ean:soDigitos($("#pEan").value),eanCaixa:soDigitos($("#pEanCx").value),
+    ean:soDigitos($("#pEan").value),eanCaixa:soDigitos($("#pEanCx").value),foto:fotoAtual||"",
     seq:(prod(id)||{}).seq||null,codigoInterno:(prod(id)||{}).codigoInterno||"",codigoInternoCx:(prod(id)||{}).codigoInternoCx||"",
     criadoEm:(prod(id)||{}).criadoEm||new Date().toISOString()};
   if(!p.nome) return toast("Dê um nome ao produto.",true);
@@ -1546,7 +1621,7 @@ $("#fProd").addEventListener("submit",async e=>{
   toast($("#pId").value?"Produto atualizado.":"Produto cadastrado.");
   resetProduto();
 });
-function resetProduto(){ $("#fProd").reset(); $("#pId").value=""; $("#pUPC").value="1"; $("#pQBU").value="1";
+function resetProduto(){ $("#fProd").reset(); fotoAtual=""; mostraFoto(); $("#pId").value=""; $("#pUPC").value="1"; $("#pQBU").value="1";
   $("#pCusto").value="0"; $("#pMin").value="0"; $("#pFormTit").textContent="Novo produto"; $("#pBtn").textContent="Cadastrar produto"; render(); }
 $("#pCancel").onclick=resetProduto;
 function editaProduto(id){ const p=prod(id); if(!p) return;
@@ -1554,6 +1629,7 @@ function editaProduto(id){ const p=prod(id); if(!p) return;
   $("#pUPC").value=p.unidadesPorCaixa||1; $("#pQBU").value=p.qtdBasePorUnidade||1; $("#pCusto").value=p.custoUnitBase||0;
   $("#pMin").value=p.estoqueMinimo||0; $("#pForn").value=p.fornecedor||""; $("#pVDias").value=p.vDias||"";
   $("#pEan").value=p.ean||""; $("#pEanCx").value=p.eanCaixa||"";
+  fotoAtual=p.foto||""; mostraFoto();
   $("#pFormTit").textContent="Editando: "+p.nome; $("#pBtn").textContent="Salvar alterações"; prevProduto();
   window.scrollTo({top:0,behavior:"smooth"}); }
 async function excluiProduto(id){ const p=prod(id); if(!p) return;
@@ -1975,26 +2051,76 @@ function renderPedidos(){
   if(!$("#qData").value) $("#qData").value=hojeISO();
   renderRascunho(); renderFilaPedidos(); renderSeparacao();
 }
-function renderRascunho(){
-  const r=S.ped.rascunho;
-  if(!r.length){ $("#qRascunho").innerHTML='<div class="empty">Nenhum item no pedido ainda. Escolha o produto, a quantidade e clique em adicionar.</div>'; $("#qResumo").textContent=""; return; }
-  $("#qRascunho").innerHTML=tabela([{t:"Produto"},{t:"Quantidade",n:1},{t:"Em unidade base",n:1},{t:"Estoque hoje",n:1},{t:""}],
-    r.map((it,i)=>{ const p=prod(it.produtoId)||{nome:"?",unidadeBase:""}, base=pedBase(it), e=estoque(it.produtoId);
-      return [esc(p.nome), nf(it.qtdPedida)+" "+esc(nomeUn(p,it.unidade)), nf(base,3)+" "+esc(p.unidadeBase),
-        e>=base? '<span class="chip ok">'+nf(e)+"</span>" : '<span class="chip warn">só '+nf(e)+"</span>",
-        '<button class="btn sm ghost" data-qx="'+i+'">Tirar</button>']; }));
-  $("#qRascunho").querySelectorAll("[data-qx]").forEach(b=>b.onclick=()=>{ S.ped.rascunho.splice(Number(b.dataset.qx),1); renderRascunho(); });
-  const v=r.reduce((s,it)=>s+pedBase(it)*custoMedio(it.produtoId),0);
-  $("#qResumo").innerHTML=r.length+" item"+(r.length===1?"":"ns")+" · valor estimado <b class='num'>"+R$(v)+"</b>";
+/* Catalogo com carrinho. Usado nas duas telas de pedido: "q" e a do almoxarifado,
+   "m" e a do lider de setor. Cada uma tem o proprio carrinho. */
+const CAT={ q:{busca:"",cat:"",cesta:()=>S.ped.rascunho},
+            m:{busca:"",cat:"",cesta:()=>S.setorv.rascunho} };
+function miniatura(p,cls){
+  const c="thumb"+(cls?" "+cls:"");
+  if(p&&p.foto) return '<img class="'+c+'" src="'+p.foto+'" alt="">';
+  return '<span class="'+c+' ph" aria-hidden="true">'+esc(((p&&p.nome)||"?").trim().charAt(0).toUpperCase())+"</span>";
 }
-$("#qAdd").onclick=()=>{
-  const p=prod($("#qProd").value); if(!p) return toast("Escolha o produto.",true);
-  const q=num($("#qQtd").value); if(q<=0) return toast("Informe uma quantidade maior que zero.",true);
-  const u=$("#qUnid").value;
-  const ja=S.ped.rascunho.find(x=>x.produtoId===p.id&&x.unidade===u);
-  if(ja) ja.qtdPedida=Number((ja.qtdPedida+q).toFixed(3)); else S.ped.rascunho.push({produtoId:p.id,unidade:u,qtdPedida:q,separado:0});
-  $("#qQtd").value="1"; renderRascunho();
-};
+function renderCatalogo(px){
+  const st=CAT[px], cesta=st.cesta();
+  const cats=Array.from(new Set(S.produtos.map(p=>p.categoria).filter(Boolean))).sort();
+  opts($("#"+px+"Cat"),cats.map(c=>({v:c,t:c})),"Todas as categorias");
+  const termo=(st.busca||"").trim().toLowerCase();
+  const lista=S.produtos.filter(p=>(!st.cat||p.categoria===st.cat) &&
+      (!termo||p.nome.toLowerCase().indexOf(termo)>=0||(p.categoria||"").toLowerCase().indexOf(termo)>=0))
+    .sort((a,b)=>a.nome.localeCompare(b.nome));
+  const alvo=$("#"+px+"CatLista");
+  if(!S.produtos.length){ alvo.innerHTML='<div class="empty">Nenhum produto cadastrado ainda.</div>'; return; }
+  if(!lista.length){ alvo.innerHTML='<div class="empty">Nenhum produto encontrado com esse filtro.</div>'; return; }
+  alvo.innerHTML=lista.map(p=>{
+    const e=estoque(p.id), noCarrinho=cesta.some(x=>x.produtoId===p.id);
+    const disp= e<=1e-9? '<span class="chip bad">sem estoque</span>'
+      : (p.estoqueMinimo>0&&e<p.estoqueMinimo)? '<span class="chip warn">pouco: '+nf(e)+" "+esc(p.unidadeBase)+"</span>"
+      : '<span class="chip ok">'+nf(e)+" "+esc(p.unidadeBase)+"</span>";
+    return '<div class="catrow'+(noCarrinho?" jaesta":"")+'">'+miniatura(p)+'<div class="ci"><b>'+esc(p.nome)+"</b><span>"+
+      esc(p.categoria||"sem categoria")+" · 1 cx = "+nf((p.unidadesPorCaixa||1)*(p.qtdBasePorUnidade||1),3)+" "+esc(p.unidadeBase)+" · "+disp+"</span></div>"+
+      '<div class="cq"><select data-cu="'+esc(p.id)+'"><option value="base">'+esc(p.unidadeBase)+'</option><option value="un">un</option><option value="cx">cx</option></select>'+
+      '<span class="step"><button type="button" data-cm="'+esc(p.id)+'" aria-label="Menos">−</button>'+
+      '<input type="number" step="0.001" min="0" value="1" data-cn="'+esc(p.id)+'" aria-label="Quantidade">'+
+      '<button type="button" data-cp="'+esc(p.id)+'" aria-label="Mais">+</button></span>'+
+      '<button class="btn sm" data-ca="'+esc(p.id)+'">'+(noCarrinho?"+ mais":"Adicionar")+"</button></div></div>";
+  }).join("");
+  alvo.querySelectorAll("[data-ca]").forEach(b=>b.onclick=()=>{
+    const id=b.dataset.ca, u=alvo.querySelector('[data-cu="'+id+'"]').value, q=num(alvo.querySelector('[data-cn="'+id+'"]').value);
+    if(q<=0) return toast("Informe uma quantidade maior que zero.",true);
+    const c=st.cesta(), ja=c.find(x=>x.produtoId===id&&x.unidade===u);
+    if(ja) ja.qtdPedida=Number((ja.qtdPedida+q).toFixed(3)); else c.push({produtoId:id,unidade:u,qtdPedida:q,separado:0});
+    toast(prod(id).nome+" no carrinho.");
+    renderCatalogo(px); renderCarrinho(px);
+  });
+  alvo.querySelectorAll("[data-cn]").forEach(i=>i.onkeydown=e=>{ if(e.key==="Enter"){ e.preventDefault(); alvo.querySelector('[data-ca="'+i.dataset.cn+'"]').click(); } });
+  const passo=(id,dir)=>{ const i=alvo.querySelector('[data-cn="'+id+'"]'); const v=Math.max(0,Number((num(i.value)+dir).toFixed(3))); i.value=v; };
+  alvo.querySelectorAll("[data-cm]").forEach(b=>b.onclick=()=>passo(b.dataset.cm,-1));
+  alvo.querySelectorAll("[data-cp]").forEach(b=>b.onclick=()=>passo(b.dataset.cp,1));
+}
+function renderCarrinho(px){
+  const c=CAT[px].cesta(), alvo=$("#"+px+"Carrinho");
+  const badge=$("#"+px+"Badge");
+  if(badge) badge.innerHTML= c.length? '<span class="chip a">'+c.length+" item"+(c.length===1?"":"ns")+"</span>" : "";
+  if(!c.length){ alvo.innerHTML='<div class="empty">Carrinho vazio. Escolha os produtos na lista ao lado.</div>'; $("#"+px+"Resumo").textContent=""; return; }
+  alvo.innerHTML=c.map((it,i)=>{ const p=prod(it.produtoId)||{nome:"(removido)",unidadeBase:""};
+    return '<div class="carit"><div style="display:flex;gap:8px;align-items:center">'+miniatura(p,"sm")+'<div><div class="cn">'+esc(p.nome)+'</div><div class="cs">'+esc(nomeUn(p,it.unidade))+" · "+nf(pedBase(it),3)+" "+esc(p.unidadeBase)+"</div></div></div>"+
+      '<input type="number" step="0.001" min="0" value="'+it.qtdPedida+'" data-cq="'+i+'" aria-label="Quantidade">'+
+      '<button class="btn sm ghost" data-cx="'+i+'" aria-label="Tirar">Tirar</button></div>'; }).join("");
+  alvo.querySelectorAll("[data-cq]").forEach(inp=>inp.onchange=()=>{ const i=Number(inp.dataset.cq), v=num(inp.value);
+    if(v<=0) c.splice(i,1); else c[i].qtdPedida=v;
+    setTimeout(function(){ renderCatalogo(px); renderCarrinho(px); },0); });
+  alvo.querySelectorAll("[data-cx]").forEach(b=>b.onclick=()=>{ c.splice(Number(b.dataset.cx),1); renderCatalogo(px); renderCarrinho(px); });
+  const v=c.reduce((a,it)=>a+pedBase(it)*custoMedio(it.produtoId),0);
+  const semEstoque=c.filter(it=>estoque(it.produtoId)<pedBase(it)-1e-6).length;
+  $("#"+px+"Resumo").innerHTML=c.length+" item"+(c.length===1?"":"ns")+" · valor estimado <b class='num'>"+R$(v)+"</b>"+
+    (semEstoque? '<br><span style="color:var(--warn)">'+semEstoque+" item(ns) com estoque menor que o pedido — o almoxarifado separa o que tiver.</span>":"");
+}
+function renderRascunho(){ renderCatalogo("q"); renderCarrinho("q"); }
+["q","m"].forEach(px=>{
+  const bu=$("#"+px+"Busca"), ca=$("#"+px+"Cat");
+  if(bu) bu.addEventListener("input",()=>{ CAT[px].busca=bu.value; renderCatalogo(px); });
+  if(ca) ca.addEventListener("change",()=>{ CAT[px].cat=ca.value; renderCatalogo(px); });
+});
 $("#qLimpar").onclick=()=>{ S.ped.rascunho=[]; renderRascunho(); };
 $("#qEnviar").onclick=async()=>{
   const setor=$("#qSetor").value; if(!setor) return toast("Escolha o setor que está pedindo.",true);
@@ -2365,18 +2491,7 @@ function renderSetorView(){
     const t=$("#mTroca"); if(t) t.onchange=()=>{ S.setorv.setor=t.value; S.setorv.rascunho=[]; renderSetorView(); };
   }
   if(!$("#mData").value) $("#mData").value=hojeISO();
-  const ps=S.produtos.slice().sort((a,b)=>a.nome.localeCompare(b.nome)).map(p=>({v:p.id,t:p.nome+" ("+p.unidadeBase+")"}));
-  opts($("#mProd"),ps,"Escolha o produto");
-
-  const r=S.setorv.rascunho;
-  if(!r.length){ $("#mRasc").innerHTML='<div class="empty">Nenhum item ainda. Escolha o produto, a quantidade e clique em adicionar.</div>'; $("#mResumo").textContent=""; }
-  else{
-    $("#mRasc").innerHTML=tabela([{t:"Produto"},{t:"Quantidade",n:1},{t:""}],
-      r.map((it,i)=>{ const p=prod(it.produtoId)||{nome:"?",unidadeBase:""};
-        return [esc(p.nome), nf(it.qtdPedida)+" "+esc(nomeUn(p,it.unidade)), '<button class="btn sm ghost" data-mx="'+i+'">Tirar</button>']; }));
-    $("#mRasc").querySelectorAll("[data-mx]").forEach(b=>b.onclick=()=>{ S.setorv.rascunho.splice(Number(b.dataset.mx),1); renderSetorView(); });
-    $("#mResumo").textContent=r.length+" item"+(r.length===1?"":"ns")+" no pedido.";
-  }
+  renderCatalogo("m"); renderCarrinho("m");
 
   const meus=S.pedidos.filter(q=>q.setor===setor).sort((a,b)=>(b.numero||0)-(a.numero||0)).slice(0,12);
   $("#mLista").innerHTML= meus.length? '<div class="pedlist">'+meus.map(q=>{
@@ -2391,14 +2506,6 @@ function renderSetorView(){
     }).join("")+"</div>"
     : '<div class="empty">Nenhum pedido deste setor ainda. O primeiro que você enviar aparece aqui com o andamento da separação.</div>';
 }
-$("#mAdd").onclick=()=>{
-  const p=prod($("#mProd").value); if(!p) return toast("Escolha o produto.",true);
-  const q=num($("#mQtd").value); if(q<=0) return toast("Informe uma quantidade maior que zero.",true);
-  const u=$("#mUnid").value;
-  const ja=S.setorv.rascunho.find(x=>x.produtoId===p.id&&x.unidade===u);
-  if(ja) ja.qtdPedida=Number((ja.qtdPedida+q).toFixed(3)); else S.setorv.rascunho.push({produtoId:p.id,unidade:u,qtdPedida:q,separado:0});
-  $("#mQtd").value="1"; renderSetorView();
-};
 $("#mLimpar").onclick=()=>{ S.setorv.rascunho=[]; renderSetorView(); };
 $("#mEnviar").onclick=async()=>{
   const setor=S.setorv.setor; if(!setor) return toast("Cadastre um setor antes.",true);
