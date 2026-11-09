@@ -43,12 +43,15 @@ aí é preciso um banco de dados compartilhado, que é outro tipo de hospedagem.
 | Saída para produção | Baixa automática por FEFO, rateando entre lotes, com setor e responsável |
 | Kanban de validade | Vencido, crítico, atenção e em dia, com o valor em risco de cada lote |
 | Desperdício | Perda com motivo obrigatório e gráficos por motivo e por setor |
+| Pré-preparo da semana | Retirar = multiplicador (padrão 2) × média por dia dos últimos 30 dias, por item de cozinha, com os produtos ligados a cada item |
+| Checklist de hoje | Contagem do dia com MÁX, CONTADO e REPOR (OK quando já está no máximo) |
 | Balanço e conversão | Contagem em caixa + unidade + fração, diferença em quantidade e em dinheiro |
 | Curva ABC e compras | Classe, giro, cobertura, ponto de pedido e sugestão de compra |
 | Relatórios | Filtro por período, produto, setor e tipo, com exportação CSV |
 | Produtos | Cadastro com a conversão da caixa |
 | Códigos e etiquetas | Código do fabricante e código interno EAN-13 com folha de etiquetas |
 | Setores e responsáveis | Cadastro dos setores que aparecem na saída e no desperdício |
+| Importar base | Carga por CSV de produtos, lotes, movimentos e itens de pré-preparo, com modelos para baixar |
 | Ajustes | Lead time, faixas de validade, cobertura alvo, modo setor, backup |
 | Como usar o sistema | Manual dentro do próprio sistema |
 
