@@ -316,6 +316,24 @@ tfoot td{font-weight:700;background:var(--surface2);border-top:1px solid var(--l
 .sepit .ac{display:flex;gap:6px;align-items:center}
 .sepit .ac input{width:86px;text-align:right;font-family:var(--mono);padding:5px 8px}
 .sepit.ok .nm{color:var(--ink2)}
+/* ===== Tema Holanda Chat: menu lateral azul-marinho, destaque índigo, fundo claro neutro ===== */
+:root{--paper:#F5F5F9;--surface:#FFFFFF;--surface2:#F0F0F6;--surface3:#E6E6F0;--ink:#1B1C2B;--ink2:#53566B;--ink3:#868AA0;--line:#E4E4EE;--line2:#D0D1E0;--accent:#5646DB;--accentInk:#FFFFFF;--accentSoft:#ECEAFC;--accentLine:#C8C3F5;--rail:#1C1F3F;--railInk:#C9CBE6;--railMute:#8185AE;--railHover:#272B55;--railLine:#2F3361}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#12131F;--surface:#1B1D2E;--surface2:#232639;--surface3:#2C3047;--ink:#EEEFF8;--ink2:#B3B6CC;--ink3:#7F83A0;--line:#2B2E45;--line2:#3A3E5C;--accent:#9A90FF;--accentInk:#12102E;--accentSoft:#262552;--accentLine:#413F85;--rail:#171936;--railHover:#222550;--railLine:#2A2D5A}}
+:root[data-theme="dark"]{--paper:#12131F;--surface:#1B1D2E;--surface2:#232639;--surface3:#2C3047;--ink:#EEEFF8;--ink2:#B3B6CC;--ink3:#7F83A0;--line:#2B2E45;--line2:#3A3E5C;--accent:#9A90FF;--accentInk:#12102E;--accentSoft:#262552;--accentLine:#413F85;--rail:#171936;--railHover:#222550;--railLine:#2A2D5A}
+.rail{background:var(--rail);border-right:0;color:var(--railInk)}
+@media (max-width:979px){.rail{border-bottom:0}}
+.brand{border-bottom:1px solid var(--railLine);margin-bottom:8px}
+.brand .mark{background:#5646DB;color:#fff;border-radius:8px}
+.brand .nm{color:#fff}
+.brand .sb{color:var(--railMute)}
+.nav{color:var(--railInk);border-radius:6px;border-color:transparent}
+.nav:hover{background:var(--railHover);color:#fff}
+.nav[aria-current="true"]{background:#5646DB;border-color:#5646DB;color:#fff;font-weight:600}
+.nav .bdg{background:#E5484D;color:#fff}
+.railfoot{color:var(--railMute);border-top-color:var(--railLine)}
+.pagehead{padding-bottom:12px;border-bottom:1px solid var(--line)}
+.pagehead h1{font-size:22px}
+th{background:var(--surface2)}
 </style>
 
 <div class="shell">
@@ -330,6 +348,34 @@ tfoot td{font-weight:700;background:var(--surface2);border-top:1px solid var(--l
 
   <main class="main">
     <div id="banners"></div>
+
+    <!-- ============ PRE-PREPARO ============ -->
+    <section id='ab-preparo' hidden>
+      <div class='pagehead'><div><span class='eyebrow'>Cozinha</span><h1>Pré-preparo da semana</h1><p id='ppSub'></p></div><div class='row'><button class='btn ghost' type='button' id='ppCsv'>Exportar CSV</button></div></div>
+      <div id='ppAviso'></div>
+      <div id='ppTbl'></div>
+      <div class='grid g2' style='margin-top:14px'>
+        <div class='card'><h3>Regra do cálculo</h3><p class='hint'>Retirar = multiplicador × média por dia da janela. A janela termina ontem, para o dia corrente incompleto não distorcer.</p><div class='row'><label class='f' style='flex:1 1 120px'>Janela (dias)<input id='ppJan' type='number' min='1' step='1'></label><label class='f' style='flex:1 1 120px'>Multiplicador<input id='ppMult' type='number' min='0' step='0.1'></label><button class='btn' type='button' id='ppCfgSalva'>Salvar regra</button></div></div>
+        <div class='card'><h3>Novo item</h3><p class='hint'>Ex.: Bife Parmegiana. O máx é o teto usado na contagem do checklist.</p><div class='row'><label class='f' style='flex:2 1 200px'>Nome do item<input id='ppNovoNome' placeholder='Ex.: Bife Parmegiana'></label><label class='f' style='flex:1 1 90px'>Máx<input id='ppNovoMax' type='number' min='0' step='1'></label><button class='btn' type='button' id='ppAdd'>Adicionar</button></div></div>
+      </div>
+      <div class='card' style='margin-top:14px'><h3>Itens e produtos ligados</h3><p class='hint'>Ligue cada item aos produtos do estoque que ele consome. A média sai das saídas lançadas para esses produtos.</p><div id='ppGrupos'></div></div>
+    </section>
+
+    <!-- ============ CHECKLIST ============ -->
+    <section id='ab-checklist' hidden>
+      <div class='pagehead'><div><span class='eyebrow'>Contagem do dia</span><h1>Checklist de hoje</h1><p id='ckSub'></p></div><div class='row'><label class='f' style='flex:1 1 160px'>Quem contou<input id='ckResp' list='lstResp' placeholder='Nome'></label><button class='btn ghost' type='button' id='ckCsv'>Exportar CSV</button></div></div>
+      <div id='ckTbl'></div>
+      <div id='ckResumo' class='small muted' style='margin-top:10px'></div>
+    </section>
+
+    <!-- ============ IMPORTAR BASE ============ -->
+    <section id='ab-importar' hidden>
+      <div class='pagehead'><div><span class='eyebrow'>Carga inicial</span><h1>Importar base</h1><p>Cole o CSV ou escolha o arquivo e importe nesta ordem: produtos, lotes, movimentos e itens de pré-preparo. Quantidades sempre na unidade base (kg, L ou un). Datas dd/mm/aa, decimal com vírgula.</p></div></div>
+      <div class='banner'><div>Os <b>lotes</b> definem o estoque. Os <b>movimentos</b> entram só no histórico e na média de consumo, sem mexer no saldo, então não importe como entrada o que já está nos lotes. Importar o mesmo arquivo de movimentos duas vezes duplica o histórico. Linhas que começam com EXEMPLO são ignoradas.</div></div>
+      <div class='grid g2' id='imGrid'></div>
+      <div class='card' style='margin-top:14px'><h3>Resultado</h3><div id='imLog' class='small muted' style='white-space:pre-wrap'></div></div>
+      <div class='card' style='margin-top:14px'><h3>Base atual</h3><div id='imBase' class='small'></div></div>
+    </section>
 
     <!-- ============ PAINEL ============ -->
     <section id="ab-painel">
@@ -981,6 +1027,236 @@ tfoot td{font-weight:700;background:var(--surface2);border-top:1px solid var(--l
   </main>
 </div>
 <div id="printArea" aria-hidden="true"></div>
+<script>
+'use strict';
+/* ===== PRÉ-PREPARO, CHECKLIST E IMPORTAÇÃO DE BASE ===== */
+const PP_NL=String.fromCharCode(10);
+let ppLog='';
+let ppSkip=false;
+async function ppSalvaSemRender(){ let pr; ppSkip=true; try{ pr=salvarCfg(); } finally{ ppSkip=false; } await pr; }
+function ppCfg(){ const c=S.cfg; if(!c.prep) c.prep={janela:30,mult:2}; if(!c.grupos) c.grupos=[]; if(!c.chk) c.chk={}; return c; }
+function ppNorm(s){ return String(s==null?'':s).normalize('NFD').split('').filter(ch=>{ const k=ch.charCodeAt(0); return k<768||k>879; }).join('').toLowerCase().trim(); }
+function ppNum(v){ let s=String(v==null?'':v).trim().split(' ').join(''); if(!s) return 0; if(s.indexOf(',')>-1) s=s.split('.').join('').replace(',','.'); const n=parseFloat(s); return isFinite(n)?n:NaN; }
+function ppDigitos(v){ return String(v==null?'':v).split('').filter(ch=>ch>='0'&&ch<='9').join(''); }
+function ppUn(u){ const k=ppNorm(u); if(k==='kg'||k==='quilo') return 'kg'; if(k==='l'||k==='lt'||k==='litro') return 'L'; if(k==='un'||k==='und'||k==='unidade') return 'un'; return null; }
+function ppData(v){ const s=String(v||'').trim(); if(!s) return ''; if(s.indexOf('/')>-1){ const p=s.split('/'); if(p.length!==3) return null; let y=p[2]; if(y.length===2) y='20'+y; const m=('0'+p[1]).slice(-2), d=('0'+p[0]).slice(-2); if(y.length!==4||isNaN(Number(y+m+d))) return null; return y+'-'+m+'-'+d; } if(s.length>=10&&s.charAt(4)==='-') return s.slice(0,10); return null; }
+function ppParse(text){
+  text=String(text||''); if(text.charCodeAt(0)===65279) text=text.slice(1);
+  const nl=text.indexOf(PP_NL); const first=nl<0?text:text.slice(0,nl);
+  const sep=first.split(';').length>=first.split(',').length?';':',';
+  const rows=[]; let row=[], cur='', q=false;
+  for(let i=0;i<text.length;i++){ const ch=text.charAt(i), cc=text.charCodeAt(i);
+    if(q){ if(cc===34){ if(text.charCodeAt(i+1)===34){ cur+=ch; i++; } else q=false; } else cur+=ch; }
+    else if(cc===34) q=true;
+    else if(ch===sep){ row.push(cur); cur=''; }
+    else if(cc===10){ row.push(cur); rows.push(row); row=[]; cur=''; }
+    else if(cc!==13) cur+=ch;
+  }
+  if(cur!==''||row.length){ row.push(cur); rows.push(row); }
+  const ok=rows.filter(r=>r.some(x=>String(x).trim()!==''));
+  if(!ok.length) return [];
+  const h=ok[0].map(x=>ppNorm(x).split(' ').join('_'));
+  return ok.slice(1).map(r=>{ const o={}; h.forEach((k,i)=>{ o[k]=String(r[i]==null?'':r[i]).trim(); }); return o; });
+}
+function ppProdPorNome(n){ const k=ppNorm(n); return S.produtos.find(p=>ppNorm(p.nome)===k); }
+function ppProds(g){ return S.produtos.filter(p=>p.grupoPreparo===g); }
+function ppConsumo(g){
+  const c=ppCfg(), hoje=hojeISO(), de=addDias(hoje,-c.prep.janela), ate=addDias(hoje,-1);
+  const ids={}; ppProds(g).forEach(p=>{ ids[p.id]=1; });
+  let tot=0; const dias_={};
+  movsPeriodo(de,ate).forEach(m=>{ if(m.tipo==='saida'&&ids[m.produtoId]){ tot+=m.qtd||0; dias_[m.data]=1; } });
+  const media=tot/c.prep.janela;
+  return {tot:tot,media:media,dias:Object.keys(dias_).length,retirar:Math.ceil(media*c.prep.mult-1e-9),n:Object.keys(ids).length};
+}
+function ppEmCampo(){ const a=document.activeElement; return !!(a&&a.closest&&(a.tagName==='INPUT'||a.tagName==='SELECT')&&a.closest('#ab-preparo,#ab-checklist')); }
+
+function renderPreparo(){
+  if(ppEmCampo()||ppSkip) return;
+  const c=ppCfg(), hoje=hojeISO();
+  const linhas=c.grupos.map(g=>({g:g,r:ppConsumo(g.grupo)})).sort((x,y)=>y.r.retirar-x.r.retirar);
+  $('#ppSub').textContent='Retirada de hoje, '+dd(hoje)+'. Regra: '+nf(c.prep.mult,1)+' × média por dia dos últimos '+c.prep.janela+' dias ('+dd(addDias(hoje,-c.prep.janela))+' a '+dd(addDias(hoje,-1))+'), contando só saídas dos produtos ligados a cada item.';
+  $('#ppJan').value=c.prep.janela; $('#ppMult').value=c.prep.mult;
+  const sem=linhas.filter(l=>l.r.dias===0).length;
+  $('#ppAviso').innerHTML=!c.grupos.length?`<div class='banner'><div><b>Nenhum item de pré-preparo.</b> Adicione abaixo ou importe em <b>Importar base</b>, e depois ligue cada item aos produtos que ele consome.</div></div>`:(sem?`<div class='banner warn'><div><b>${sem} item(ns) sem saída na janela</b>, então o retirar fica em 0. Confira se há produtos ligados e se as saídas foram lançadas.</div></div>`:'');
+  $('#ppTbl').innerHTML=tabela([{t:'Item'},{t:'Retirar',n:1},{t:'Máx',n:1},{t:'Média/dia',n:1},{t:'Dias com saída',n:1},{t:'Produtos',n:1}],
+    linhas.map(l=>[esc(l.g.grupo),l.r.dias===0?`<span class='chip warn'>sem saída</span>`:`<b>${l.r.retirar}</b>`,nf(l.g.max||0,0),nf(l.r.media,2),String(l.r.dias),String(l.r.n)]));
+  $('#ppGrupos').innerHTML=c.grupos.length?c.grupos.map((g,i)=>{
+    const lig=ppProds(g.grupo);
+    const livres=S.produtos.filter(p=>p.grupoPreparo!==g.grupo).sort((a,b)=>a.nome.localeCompare(b.nome));
+    return `<div style='border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px;display:flex;flex-direction:column;gap:8px'>`+
+      `<div class='row' style='align-items:center;justify-content:space-between'><b>${esc(g.grupo)}</b><div class='row' style='align-items:center;gap:8px'><label class='small muted' for='gm${i}'>Máx</label><input id='gm${i}' type='number' min='0' step='1' data-gmax='${i}' value='${esc(g.max||0)}' style='width:80px;text-align:right'><button class='btn sm ghost' type='button' data-grm='${i}'>Remover item</button></div></div>`+
+      `<div class='pill-list'>${lig.length?lig.map(p=>`<span class='pill'>${esc(p.nome)} <span class='tag'>${esc(p.unidadeBase)}</span><button type='button' data-unl='${esc(p.id)}' aria-label='Desligar ${esc(p.nome)}'>×</button></span>`).join(''):`<span class='small muted'>Nenhum produto ligado.</span>`}</div>`+
+      `<div class='row' style='align-items:center'><select id='lg${i}' style='flex:1 1 220px'><option value=''>Ligar um produto do estoque…</option>${livres.map(p=>`<option value='${esc(p.id)}'>${esc(p.nome)} (${esc(p.unidadeBase)})</option>`).join('')}</select><button class='btn sm' type='button' data-lig='${i}'>Ligar</button></div></div>`;
+  }).join(''):`<div class='empty'>Nenhum item cadastrado.</div>`;
+}
+document.getElementById('ab-preparo').addEventListener('click',async ev=>{
+  const t=ev.target.closest('button'); if(!t) return;
+  const c=ppCfg();
+  if(t.id==='ppAdd'){
+    const nome=$('#ppNovoNome').value.trim(), mx=ppNum($('#ppNovoMax').value);
+    if(!nome) return toast('Dê um nome ao item.',true);
+    if(isNaN(mx)) return toast('O máx precisa ser um número.',true);
+    if(c.grupos.some(g=>ppNorm(g.grupo)===ppNorm(nome))) return toast('Já existe um item com esse nome.',true);
+    c.grupos.push({grupo:nome,max:mx,setor:'Chapa e cozinha'}); await salvarCfg();
+    $('#ppNovoNome').value=''; $('#ppNovoMax').value=''; toast('Item adicionado.');
+  } else if(t.id==='ppCfgSalva'){
+    const j=Math.max(1,Math.round(ppNum($('#ppJan').value))||30), m=ppNum($('#ppMult').value);
+    if(isNaN(m)||m<0) return toast('Multiplicador inválido.',true);
+    c.prep.janela=j; c.prep.mult=m; await salvarCfg(); toast('Regra salva.');
+  } else if(t.id==='ppCsv'){
+    const rows=[['Item','Retirar','Máx','Média por dia']].concat(c.grupos.map(g=>{ const r=ppConsumo(g.grupo); return [csvT(g.grupo),r.retirar,g.max||0,csvN(r.media)]; }));
+    baixar('pre-preparo-'+hojeISO()+'.csv',csv(rows));
+  } else if(t.dataset.lig!==undefined){
+    const i=Number(t.dataset.lig), g=c.grupos[i], pid=document.getElementById('lg'+i).value, p=prod(pid);
+    if(!g||!p) return toast('Escolha o produto para ligar.',true);
+    await salvar('produtos',p.id,Object.assign({},p,{grupoPreparo:g.grupo}));
+  } else if(t.dataset.unl!==undefined){
+    const p=prod(t.dataset.unl); if(!p) return;
+    await salvar('produtos',p.id,Object.assign({},p,{grupoPreparo:''}));
+  } else if(t.dataset.grm!==undefined){
+    const i=Number(t.dataset.grm), g=c.grupos[i]; if(!g) return;
+    if(t.dataset.armado!=='1'){ t.dataset.armado='1'; t.textContent='Confirmar remoção'; return; }
+    for(const p of ppProds(g.grupo)) await salvar('produtos',p.id,Object.assign({},p,{grupoPreparo:''}));
+    c.grupos.splice(i,1); await salvarCfg(); toast('Item removido.');
+  }
+});
+document.getElementById('ab-preparo').addEventListener('change',async ev=>{
+  const t=ev.target; if(!t.dataset||t.dataset.gmax===undefined) return;
+  const c=ppCfg(), g=c.grupos[Number(t.dataset.gmax)]; const v=ppNum(t.value);
+  if(!g||isNaN(v)) return toast('Máx inválido.',true);
+  g.max=v; await ppSalvaSemRender();
+});
+
+function ckDia(){ const c=ppCfg(), h=hojeISO(); if(!c.chk[h]) c.chk[h]={resp:'',itens:{}}; return c.chk[h]; }
+function ckRepor(max,v){ if(v===undefined||v===null||v==='') return `<span class='muted'>–</span>`; const r=max-v; return r<=0?`<span class='chip ok'>OK</span>`:`<span class='chip warn'>${nf(r,0)}</span>`; }
+function ckResumoTxt(){ const c=ppCfg(), d=ckDia(); const cont=c.grupos.filter(g=>d.itens[g.grupo]!==undefined); const rep=cont.filter(g=>g.max-d.itens[g.grupo]>0).length; return cont.length+' de '+c.grupos.length+' itens contados · '+rep+' para repor'; }
+function renderChecklist(){
+  if(ppEmCampo()||ppSkip) return;
+  const c=ppCfg(), hoje=hojeISO(), d=c.chk[hoje]||{resp:'',itens:{}};
+  $('#ckSub').textContent='Hoje, '+dd(hoje)+'. Digite o contado. Repor = máx menos contado; mostra OK quando já está no máximo ou acima.';
+  $('#ckResp').value=d.resp||'';
+  if(!c.grupos.length){ $('#ckTbl').innerHTML=`<div class='tblwrap'><div class='empty'>Nenhum item. Cadastre em <b>Pré-preparo da semana</b> ou importe a base.</div></div>`; $('#ckResumo').textContent=''; return; }
+  $('#ckTbl').innerHTML=tabela([{t:'Proteína / item'},{t:'Máx',n:1},{t:'Contado',n:1},{t:'Repor',n:1}],
+    c.grupos.map((g,i)=>[esc(g.grupo),nf(g.max||0,0),`<input id='ck${i}' class='ckin' type='number' min='0' step='any' data-ck='${i}' value='${d.itens[g.grupo]===undefined?'':esc(d.itens[g.grupo])}' aria-label='Contado de ${esc(g.grupo)}' style='width:84px;text-align:right'>`,ckRepor(g.max||0,d.itens[g.grupo])]));
+  $('#ckResumo').textContent=ckResumoTxt();
+}
+document.getElementById('ab-checklist').addEventListener('change',async ev=>{
+  const t=ev.target, c=ppCfg(), d=ckDia();
+  if(t.id==='ckResp'){ d.resp=t.value.trim(); await ppSalvaSemRender(); return; }
+  if(t.dataset&&t.dataset.ck!==undefined){
+    const g=c.grupos[Number(t.dataset.ck)]; if(!g) return;
+    if(t.value==='') delete d.itens[g.grupo]; else { const v=ppNum(t.value); if(isNaN(v)||v<0) return toast('Contagem inválida.',true); d.itens[g.grupo]=v; }
+    const chaves=Object.keys(c.chk).sort(); while(chaves.length>14){ delete c.chk[chaves.shift()]; }
+    const tr=t.closest('tr'); if(tr){ tr.lastElementChild.innerHTML=ckRepor(g.max||0,d.itens[g.grupo]); }
+    $('#ckResumo').textContent=ckResumoTxt();
+    await ppSalvaSemRender();
+  }
+});
+document.getElementById('ckCsv').addEventListener('click',()=>{
+  const c=ppCfg(), d=ckDia();
+  const rows=[['Item','Máx','Contado','Repor']].concat(c.grupos.map(g=>{ const v=d.itens[g.grupo]; return [csvT(g.grupo),g.max||0,v===undefined?'':v,v===undefined?'':(g.max-v<=0?'OK':g.max-v)]; }));
+  baixar('checklist-'+hojeISO()+'.csv',csv(rows));
+});
+
+const IM_TIPOS=[
+  ['produtos','produtos.csv','nome;categoria;unidade_base;unidades_por_caixa;qtd_base_por_unidade;custo_unidade_base;estoque_minimo;fornecedor;ean;ean_caixa;grupo_preparo','EXEMPLO Carne bovina;Carnes;kg;5;2;32,5;10;Frigorifico X;;;Carne: Churrasquinho + Picadinho'],
+  ['lotes','lotes.csv','produto;quantidade;saldo;validade;custo_unitario;fornecedor;nf;data_entrada','EXEMPLO Carne bovina;20;20;15/11/26;32,5;Frigorifico X;12345;09/11/26'],
+  ['movimentos','movimentos.csv','data;tipo;produto;quantidade;custo;valor;setor;motivo;responsavel;observacao','09/11/26;saida;EXEMPLO Carne bovina;4;32,5;130;Chapa e cozinha;;Joao;Pre-preparo'],
+  ['grupos','grupos_preparo.csv','grupo;max_semana;janela_dias;multiplicador','EXEMPLO Bife Parmegiana;15;30;2']
+];
+(function(){
+  document.getElementById('imGrid').innerHTML=IM_TIPOS.map(t=>`<div class='card'><h3>${t[1]}</h3><p class='hint'>Colunas: ${t[2].split(';').join(' · ')}</p><textarea id='im_${t[0]}' style='min-height:90px;font-family:var(--mono);font-size:12px' placeholder='${t[2]}' aria-label='Conteúdo de ${t[1]}'></textarea><div class='row' style='margin-top:8px;align-items:center'><input type='file' accept='.csv,.txt' data-fim='${t[0]}' id='imf_${t[0]}' aria-label='Arquivo ${t[1]}' style='flex:1 1 180px'><button class='btn ghost sm' type='button' data-imodelo='${t[0]}'>Baixar modelo</button><button class='btn' type='button' id='imb_${t[0]}' data-imp='${t[0]}'>Importar</button></div></div>`).join('');
+})();
+document.getElementById('ab-importar').addEventListener('change',ev=>{
+  const t=ev.target; if(!t.dataset||!t.dataset.fim) return;
+  const f=t.files&&t.files[0]; if(!f) return;
+  const r=new FileReader(); r.onload=()=>{ document.getElementById('im_'+t.dataset.fim).value=String(r.result||''); }; r.readAsText(f,'utf-8');
+});
+document.getElementById('ab-importar').addEventListener('click',ev=>{
+  const t=ev.target.closest('button'); if(!t) return;
+  if(t.dataset.imp) imRodar(t.dataset.imp);
+  else if(t.dataset.imodelo){ const x=IM_TIPOS.find(a=>a[0]===t.dataset.imodelo); baixar('modelo-'+x[1],x[2]+String.fromCharCode(13,10)+x[3]); }
+});
+async function imProdutos(rows,log){
+  const c=ppCfg(); let ok=0;
+  for(let i=0;i<rows.length;i++){ const r=rows[i], ln=i+2;
+    if(ppNorm(r.nome).indexOf('exemplo')===0) continue;
+    if(!r.nome){ log.push('linha '+ln+': sem nome'); continue; }
+    const ub=ppUn(r.unidade_base||'un'); if(!ub){ log.push('linha '+ln+': unidade_base '+r.unidade_base+' inválida (use kg, L ou un)'); continue; }
+    const upc=ppNum(r.unidades_por_caixa||1)||1, qbu=ppNum(r.qtd_base_por_unidade||1), cu=ppNum(r.custo_unidade_base||0), mn=ppNum(r.estoque_minimo||0);
+    if([upc,qbu,cu,mn].some(isNaN)){ log.push('linha '+ln+': número inválido em '+r.nome); continue; }
+    const ex=ppProdPorNome(r.nome), id=ex?ex.id:uid('pr');
+    const p=Object.assign({},ex||{},{id:id,nome:r.nome,categoria:r.categoria||'',unidadeBase:ub,unidadesPorCaixa:upc,qtdBasePorUnidade:qbu||1,custoUnitBase:cu,estoqueMinimo:mn,fornecedor:r.fornecedor||'',ean:ppDigitos(r.ean),eanCaixa:ppDigitos(r.ean_caixa),foto:(ex&&ex.foto)||'',criadoEm:(ex&&ex.criadoEm)||new Date().toISOString()});
+    if(r.grupo_preparo){ p.grupoPreparo=r.grupo_preparo; if(!c.grupos.some(g=>ppNorm(g.grupo)===ppNorm(r.grupo_preparo))){ c.grupos.push({grupo:r.grupo_preparo,max:0,setor:'Chapa e cozinha'}); log.push('item de pré-preparo criado com máx 0: '+r.grupo_preparo); } }
+    await salvar('produtos',id,p); ok++;
+  }
+  await salvarCfg();
+  return ok;
+}
+async function imLotes(rows,log){
+  if(S.lotes.length+rows.length>950){ log.push('importação cancelada: o banco lê no máximo 1.000 lotes e já há '+S.lotes.length+'. Arquive lotes zerados em Ajustes ou envie menos linhas.'); return 0; }
+  let ok=0, zero=0;
+  for(let i=0;i<rows.length;i++){ const r=rows[i], ln=i+2;
+    if(ppNorm(r.produto).indexOf('exemplo')===0) continue;
+    const p=ppProdPorNome(r.produto); if(!p){ log.push('linha '+ln+': produto '+r.produto+' não cadastrado'); continue; }
+    const q=ppNum(r.quantidade), sd=r.saldo===''?q:ppNum(r.saldo), cu=r.custo_unitario===''?(p.custoUnitBase||0):ppNum(r.custo_unitario), v=ppData(r.validade), de=ppData(r.data_entrada);
+    if([q,sd,cu].some(isNaN)||v===null||de===null){ log.push('linha '+ln+': número ou data inválidos ('+r.produto+')'); continue; }
+    if(sd<=0){ zero++; continue; }
+    const l={id:uid('lt'),produtoId:p.id,quantidade:q||sd,saldo:sd,validade:v,custoUnit:cu,fornecedor:r.fornecedor||p.fornecedor||'',nf:r.nf||'',data:de||hojeISO(),criadoEm:new Date().toISOString()};
+    await salvar('lotes',l.id,l); ok++;
+  }
+  if(zero) log.push(zero+' linha(s) com saldo zero ignoradas');
+  return ok;
+}
+async function imMovs(rows,log){
+  const itens=[];
+  for(let i=0;i<rows.length;i++){ const r=rows[i], ln=i+2;
+    if(ppNorm(r.produto).indexOf('exemplo')===0) continue;
+    const p=ppProdPorNome(r.produto); if(!p){ log.push('linha '+ln+': produto '+r.produto+' não cadastrado'); continue; }
+    const tp=ppNorm(r.tipo), data=ppData(r.data), q=ppNum(r.quantidade), cu=r.custo===''?(p.custoUnitBase||0):ppNum(r.custo);
+    if(['entrada','saida','desperdicio','ajuste'].indexOf(tp)<0){ log.push('linha '+ln+': tipo '+r.tipo+' inválido'); continue; }
+    if(!data||isNaN(q)||isNaN(cu)){ log.push('linha '+ln+': data, quantidade ou custo inválidos'); continue; }
+    if(tp==='desperdicio'&&!r.motivo){ log.push('linha '+ln+': perda sem motivo'); continue; }
+    const vl=r.valor===''?q*cu:ppNum(r.valor);
+    itens.push({id:uid('mv'),data:data,tipo:tp,produtoId:p.id,qtd:q,custo:cu,valor:isNaN(vl)?q*cu:vl,loteId:'',setor:r.setor||'',motivo:r.motivo||'',responsavel:r.responsavel||'',fornecedor:'',obs:r.observacao||''});
+  }
+  if(itens.length) await lancaMovs(itens);
+  return itens.length;
+}
+async function imGrupos(rows,log){
+  const c=ppCfg(); let ok=0;
+  for(let i=0;i<rows.length;i++){ const r=rows[i], ln=i+2;
+    if(ppNorm(r.grupo).indexOf('exemplo')===0) continue;
+    const mx=ppNum(r.max_semana); if(!r.grupo||isNaN(mx)){ log.push('linha '+ln+': item ou máx inválido'); continue; }
+    const ex=c.grupos.find(g=>ppNorm(g.grupo)===ppNorm(r.grupo));
+    if(ex){ ex.max=mx; } else c.grupos.push({grupo:r.grupo,max:mx,setor:'Chapa e cozinha'});
+    if(r.janela_dias&&ppNum(r.janela_dias)>0) c.prep.janela=Math.round(ppNum(r.janela_dias));
+    if(r.multiplicador&&ppNum(r.multiplicador)>=0) c.prep.mult=ppNum(r.multiplicador);
+    ok++;
+  }
+  await salvarCfg();
+  return ok;
+}
+async function imRodar(kind){
+  const ta=document.getElementById('im_'+kind), btn=document.getElementById('imb_'+kind);
+  const rows=ppParse(ta.value), log=[]; let ok=0;
+  if(!rows.length){ ppLog=kind+': cole o CSV com a linha de cabeçalho antes de importar.'; renderImportar(); return; }
+  btn.disabled=true;
+  try{
+    if(kind==='produtos') ok=await imProdutos(rows,log); else if(kind==='lotes') ok=await imLotes(rows,log); else if(kind==='movimentos') ok=await imMovs(rows,log); else ok=await imGrupos(rows,log);
+  }catch(e){ log.push('erro: '+((e&&e.message)||e)); }
+  btn.disabled=false;
+  ppLog=kind+': '+ok+' linha(s) importada(s), '+log.length+' aviso(s).'+(log.length?PP_NL+log.slice(0,30).join(PP_NL)+(log.length>30?PP_NL+'… e mais '+(log.length-30):''):'');
+  toast(kind+': '+ok+' linha(s) importada(s)',ok===0&&log.length>0);
+  renderImportar();
+}
+function renderImportar(){
+  const nm=Object.keys(S.movs).reduce((s,k)=>s+(S.movs[k]||[]).length,0);
+  document.getElementById('imLog').textContent=ppLog||'Nada importado nesta sessão.';
+  document.getElementById('imBase').textContent=S.produtos.length+' produtos, '+S.lotes.length+' lotes (limite de leitura 1.000), '+nm+' movimentos, '+ppCfg().grupos.length+' itens de pré-preparo.';
+}
+</script>
+
 <datalist id="lstResp"></datalist>
 <datalist id="lstCat"></datalist>
 
@@ -1226,10 +1502,12 @@ const ABAS=[
   {g:"Dia a dia"},
   {k:"painel",t:"Painel"},{k:"pedidos",t:"Pedidos dos setores"},{k:"leitor",t:"Leitor de código"},{k:"entrada",t:"Entrada de mercadoria"},{k:"saida",t:"Saída para produção"},
   {k:"validade",t:"Kanban de validade"},{k:"desperdicio",t:"Desperdício"},
+  {g:"Cozinha"},
+  {k:"preparo",t:"Pré-preparo da semana"},{k:"checklist",t:"Checklist de hoje"},
   {g:"Análise"},
   {k:"balanco",t:"Balanço e conversão"},{k:"abc",t:"Curva ABC e compras"},{k:"relatorios",t:"Relatórios"},
   {g:"Cadastro"},
-  {k:"produtos",t:"Produtos"},{k:"codigos",t:"Códigos e etiquetas"},{k:"setores",t:"Setores e responsáveis"},{k:"ajustes",t:"Ajustes"},
+  {k:"produtos",t:"Produtos"},{k:"codigos",t:"Códigos e etiquetas"},{k:"setores",t:"Setores e responsáveis"},{k:"importar",t:"Importar base"},{k:"ajustes",t:"Ajustes"},
   {g:"Utensílios"},
   {k:"utContagem",t:"Contagem de turno"},{k:"utLanc",t:"Quebra e reposição"},
   {k:"utItens",t:"Peças e kits"},{k:"utPerdas",t:"Perdas de louça"},
@@ -1246,7 +1524,7 @@ function render(){
   $("#brandNome").parentElement.parentElement.querySelector(".mark").textContent=(S.cfg.nome||"PD").split(/\s+/).map(w=>w[0]).join("").slice(0,2).toUpperCase();
   $("#dataHoje").textContent="Hoje, "+dd(hojeISO());
   refreshSelects(); renderBanners();
-  const f={utContagem:renderUtContagem,utLanc:renderUtLanc,utItens:renderUtItens,utPerdas:renderUtPerdas,setorview:renderSetorView,direcao:renderDirecao,painel:renderPainel,pedidos:renderPedidos,leitor:renderLeitor,entrada:renderEntrada,saida:renderSaida,validade:renderKanban,desperdicio:renderPerdas,
+  const f={preparo:renderPreparo,checklist:renderChecklist,importar:renderImportar,utContagem:renderUtContagem,utLanc:renderUtLanc,utItens:renderUtItens,utPerdas:renderUtPerdas,setorview:renderSetorView,direcao:renderDirecao,painel:renderPainel,pedidos:renderPedidos,leitor:renderLeitor,entrada:renderEntrada,saida:renderSaida,validade:renderKanban,desperdicio:renderPerdas,
            balanco:renderBalanco,abc:renderABC,relatorios:renderRel,produtos:renderProdutos,codigos:renderCodigos,setores:renderSetores,ajustes:renderAjustes}[S.aba];
   if(f) f();
 }
